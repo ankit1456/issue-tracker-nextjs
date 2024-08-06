@@ -1,10 +1,14 @@
 import { Link, IssueStatusBadge } from "@/components";
 import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
-import IssueActions from "./_components/IssueActions";
+import IssueActions from "../_components/IssueActions";
 
 async function IssuesPage() {
-  const issues = await prisma.issue.findMany();
+  const issues = await prisma.issue.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,5 +49,8 @@ async function IssuesPage() {
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";
+// export const revalidate = 60
 
 export default IssuesPage;

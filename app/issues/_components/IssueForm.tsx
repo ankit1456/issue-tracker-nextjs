@@ -1,47 +1,47 @@
 "use client";
 
-import { issueSchema } from "@/app/validationSchemas";
+import { createIssueSchema } from "@/app/validationSchemas";
 import { ErrorMessage } from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
 import { Button, Callout, Spinner, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import SimpleMDE from "react-simplemde-editor";
 import { z } from "zod";
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false,
-});
 
 type Props = {
   issue?: Issue;
 };
-type TIssueFormData = z.infer<typeof issueSchema>;
+type TIssueFormData = z.infer<typeof createIssueSchema>;
 
 function IssueForm({ issue }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const isEditMode = !!issue;
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<TIssueFormData>({
-    defaultValues: issue
+    defaultValues: isEditMode
       ? { title: issue.title, description: issue.description }
       : {},
-    resolver: zodResolver(issueSchema),
+    resolver: zodResolver(createIssueSchema),
   });
 
   const onSubmit = async (data: TIssueFormData) => {
     setIsSubmitting(true);
     try {
-      await axios.post("/api/issues", data);
-      router.push("/issues");
+      if (isEditMode) await axios.patch(`/api/issues/${issue.id}`, data);
+      else await axios.post("/api/issues", data);
+      router.push("/issues/list");
+      router.refresh();
     } catch (error) {
       setError("An unexpected error occured!");
     } finally {
@@ -77,7 +77,7 @@ function IssueForm({ issue }: Props) {
 
         <Button disabled={isSubmitting}>
           {isSubmitting && <Spinner />}
-          {isSubmitting ? "Creating Issue..." : "Create New Issue"}
+          {isEditMode ? "Update" : "Create New"} Issue{" "}
         </Button>
       </form>
     </div>

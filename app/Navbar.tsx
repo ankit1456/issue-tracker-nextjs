@@ -12,7 +12,7 @@ const links = [
   },
   {
     label: "Issues",
-    href: "/issues",
+    href: "/issues/list",
   },
 ];
 
@@ -33,7 +33,7 @@ function Navbar() {
             <li key={link.href}>
               <Link
                 className={classnames({
-                  "rounded-md bg-[var(--accent-9)] p-1.5 px-2 text-white":
+                  "rounded-md bg-[var(--accent-9)] p-1 px-2 text-white":
                     isActive,
                   "transition-colors": true,
                 })}

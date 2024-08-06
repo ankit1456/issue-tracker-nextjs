@@ -1,14 +1,3 @@
-import { Skeleton } from "@/components";
-import { Box } from "@radix-ui/themes";
+import IssueFormSekeleton from "../_components/IssueFormSekeleton";
 
-function LoadingNewIssuePage() {
-  return (
-    <Box>
-      <p>loading...</p>
-      <Skeleton />
-      <Skeleton />
-    </Box>
-  );
-}
-
-export default LoadingNewIssuePage;
+export default IssueFormSekeleton;
