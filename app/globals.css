@@ -21,14 +21,3 @@ body {
     cursor: pointer !important;
   }
 }
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-.rt-Text {
-  margin-block: 0 !important;
-  margin-top: 0.1rem !important;
-}
