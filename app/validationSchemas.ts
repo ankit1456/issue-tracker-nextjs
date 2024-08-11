@@ -1,3 +1,4 @@
+import { Status } from "@prisma/client";
 import { z } from "zod";
 
 export const createIssueSchema = z.object({
@@ -24,4 +25,11 @@ export const updateIssueSchema = z.object({
     .max(255)
     .optional()
     .nullable(),
+  status: z
+    .nativeEnum(Status)
+    .optional()
+    .refine(
+      (value) => value === undefined || Object.values(Status).includes(value),
+      { message: "Status must be one of OPEN, IN_PROGRESS, or CLOSED" },
+    ),
 });

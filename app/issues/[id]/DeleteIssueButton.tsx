@@ -1,34 +1,33 @@
 "use client";
 
 import { AlertDialog, Button, Flex, Spinner } from "@radix-ui/themes";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function DeleteIssueButton({ issueId }: { issueId: string }) {
-  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState(false);
   const router = useRouter();
 
-  const handleDeleteIssue = async () => {
-    setIsDeleting(true);
-
-    try {
-      await axios.delete(`/api/issues/${issueId}`);
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: () => axios.delete(`/api/issues/${issueId}`),
+    onSuccess: () => {
       router.push("/issues/list");
       router.refresh();
-    } catch (error) {
-      setError(true);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+    },
+  });
+
+  useEffect(() => {
+    if (isError) setError(true);
+  }, [isError]);
+
   return (
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button disabled={isDeleting} color="red">
-            {isDeleting && <Spinner />}
+          <Button disabled={isPending} color="red">
+            {isPending && <Spinner />}
             Delete Issue
           </Button>
         </AlertDialog.Trigger>
@@ -46,7 +45,7 @@ function DeleteIssueButton({ issueId }: { issueId: string }) {
               </Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
-              <Button variant="solid" color="red" onClick={handleDeleteIssue}>
+              <Button variant="solid" color="red" onClick={() => mutate()}>
                 Delete Issue
               </Button>
             </AlertDialog.Action>

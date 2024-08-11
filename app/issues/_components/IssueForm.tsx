@@ -5,10 +5,10 @@ import { ErrorMessage } from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
 import { Button, Callout, Spinner, TextField } from "@radix-ui/themes";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import SimpleMDE from "react-simplemde-editor";
 import { z } from "zod";
@@ -19,8 +19,6 @@ type Props = {
 type TIssueFormData = z.infer<typeof createIssueSchema>;
 
 function IssueForm({ issue }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
   const router = useRouter();
   const isEditMode = !!issue;
   const {
@@ -35,29 +33,32 @@ function IssueForm({ issue }: Props) {
     resolver: zodResolver(createIssueSchema),
   });
 
-  const onSubmit = async (data: TIssueFormData) => {
-    setIsSubmitting(true);
-    try {
-      if (isEditMode) await axios.patch(`/api/issues/${issue.id}`, data);
-      else await axios.post("/api/issues", data);
+  const onSubmit = handleSubmit(async (data: TIssueFormData) => {
+    if (isEditMode) await axios.patch(`/api/issues/${issue.id}`, data);
+    else await axios.post("/api/issues", data);
+  });
+
+  const {
+    mutate: onSubmitMutate,
+    error,
+    isPending: isSubmitting,
+  } = useMutation({
+    mutationFn: onSubmit,
+    onSuccess: () => {
       router.push("/issues/list");
       router.refresh();
-    } catch (error) {
-      setError("An unexpected error occured!");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+  });
 
   return (
     <div className="max-w-xl">
       {error && (
         <Callout.Root color="red" className="mb-5">
-          <Callout.Text>{error}</Callout.Text>
+          <Callout.Text>{error.message}</Callout.Text>
         </Callout.Root>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-xl space-y-4">
+      <form onSubmit={onSubmitMutate} className="max-w-xl space-y-4">
         <TextField.Root size="3" placeholder="Title" {...register("title")} />
 
         <ErrorMessage>{errors.title?.message}</ErrorMessage>

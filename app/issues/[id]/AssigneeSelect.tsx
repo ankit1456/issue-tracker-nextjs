@@ -3,7 +3,7 @@
 import { Issue, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -12,20 +12,24 @@ function AssigneeSelect({ issue }: { issue: Issue }) {
   const { data: users, isPending: isLoadingUsers, error } = useUsers();
   const router = useRouter();
 
-  const assignIssue = (userId: string) => {
-    axios
-      .patch(`/api/issues/${issue.id}`, {
-        assignedToUserId: userId !== "null" ? userId : null,
-      })
-      .then(() => {
-        toast.success(
-          userId === "null" ? "Issue Unassigned" : "Issue assigned",
-        );
+  const assignIssue = async (userId: string) => {
+    const { data } = await axios.patch(`/api/issues/${issue.id}`, {
+      assignedToUserId: userId !== "null" ? userId : null,
+    });
 
-        router.refresh();
-      })
-      .catch(() => toast.error("Changes could not be saved"));
+    return data;
   };
+
+  const { mutate } = useMutation({
+    mutationFn: assignIssue,
+    onSuccess: (data) => {
+      toast.success(
+        !data.assignedToUserId ? "Issue Unassigned" : "Issue assigned",
+      );
+      router.refresh();
+    },
+    onError: () => toast.error("Changes could not be saved"),
+  });
 
   if (error) return null;
   if (isLoadingUsers) return <Skeleton height="2rem" />;
@@ -35,7 +39,7 @@ function AssigneeSelect({ issue }: { issue: Issue }) {
       <Toaster />
       <Select.Root
         defaultValue={issue.assignedToUserId ?? "null"}
-        onValueChange={assignIssue}
+        onValueChange={mutate}
       >
         <Select.Trigger placeholder="assign user" />
         <Select.Content position="popper">
