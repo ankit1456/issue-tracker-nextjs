@@ -1,8 +1,7 @@
-import { IssueStatusBadge } from "@/components";
-import prisma from "@/prisma/client";
+import { IssueStatusBadge, Link } from "@/components";
 import { Issue, Status } from "@prisma/client";
 import { ArrowUpIcon, HeightIcon } from "@radix-ui/react-icons";
-import { Table, Flex } from "@radix-ui/themes";
+import { Flex, Table } from "@radix-ui/themes";
 import NextLink from "next/link";
 
 type Props = {
@@ -44,11 +43,14 @@ async function IssueTable({ searchParams, issues }: Props) {
         {issues.map((issue) => (
           <Table.Row key={issue.id}>
             <Table.Cell>
-              <NextLink href={`/issues/${issue.id}`}>{issue.title}</NextLink>
-              <div className="block sm:hidden">
-                <IssueStatusBadge status={issue.status} />
-              </div>
+              <Flex>
+                <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
+                <div className="ml-auto block sm:hidden">
+                  <IssueStatusBadge status={issue.status} />
+                </div>
+              </Flex>
             </Table.Cell>
+
             <Table.Cell className="hidden sm:table-cell">
               <IssueStatusBadge status={issue.status} />
             </Table.Cell>

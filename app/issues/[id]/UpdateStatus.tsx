@@ -1,11 +1,11 @@
 "use client";
 
-import { Issue, Status, User } from "@prisma/client";
+import { Issue, Status } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 function UpdateStatus({ issue }: { issue: Issue }) {
   const router = useRouter();

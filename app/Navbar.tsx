@@ -1,19 +1,13 @@
 "use client";
 
+import { Skeleton } from "@/components";
+import { Avatar, Container, DropdownMenu, Flex, Text } from "@radix-ui/themes";
+import classnames from "classnames";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillBug } from "react-icons/ai";
-import classnames from "classnames";
-import { useSession } from "next-auth/react";
-import { Skeleton } from "@/components";
-import {
-  Avatar,
-  Box,
-  Container,
-  DropdownMenu,
-  Flex,
-  Text,
-} from "@radix-ui/themes";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 function Navbar() {
   return (
@@ -26,9 +20,10 @@ function Navbar() {
             </Link>
             <NavLinks />
           </Flex>
-          {/* <Box> */}
-          <AuthLinks />
-          {/* </Box> */}
+          <Flex gap="4" align="center">
+            <AuthLinks />
+            <ThemeSwitcher />
+          </Flex>
         </Flex>
       </Container>
     </nav>
