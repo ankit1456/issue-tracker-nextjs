@@ -13,7 +13,7 @@ type Props = {
   };
 };
 
-async function EditIssuePage({ params }: Props) {
+async function EditIssuePage({ params }: Readonly<Props>) {
   const issue = await prisma.issue.findUnique({
     where: {
       id: params.id,

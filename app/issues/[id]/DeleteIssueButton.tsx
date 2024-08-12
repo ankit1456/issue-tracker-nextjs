@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-function DeleteIssueButton({ issueId }: { issueId: string }) {
+function DeleteIssueButton({ issueId }: Readonly<{ issueId: string }>) {
   const [error, setError] = useState(false);
   const router = useRouter();
 

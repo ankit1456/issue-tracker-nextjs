@@ -17,18 +17,18 @@ import {
 
 function Navbar() {
   return (
-    <nav className="mb-5 border-b shadow-sm">
+    <nav className="mb-5 border-b px-5 text-[.9rem] tracking-wide shadow-sm">
       <Container>
-        <Flex justify="between" align="center" className="h-16 px-5">
+        <Flex justify="between" align="center" className="h-14 px-5">
           <Flex align="center" gap="4">
             <Link href="/">
               <AiFillBug className="text-xl text-[var(--accent-10)]" />
             </Link>
             <NavLinks />
           </Flex>
-          <Box>
-            <AuthLinks />
-          </Box>
+          {/* <Box> */}
+          <AuthLinks />
+          {/* </Box> */}
         </Flex>
       </Container>
     </nav>
@@ -79,7 +79,11 @@ function AuthLinks() {
 
   if (status === "loading") return <Skeleton width="3rem" />;
   if (status === "unauthenticated")
-    return <Link href="/api/auth/signin">Login</Link>;
+    return (
+      <Link className="transition-colors" href="/api/auth/signin">
+        Login
+      </Link>
+    );
 
   return (
     status === "authenticated" && (
@@ -97,7 +101,7 @@ function AuthLinks() {
 
         <DropdownMenu.Content className="!text-xl">
           <DropdownMenu.Label className="!pl-2">
-            <Text className="text-[.9rem]">{session!.user?.name}</Text>
+            <Text className="text-[.9rem]">{session.user?.name}</Text>
           </DropdownMenu.Label>
 
           <DropdownMenu.CheckboxItem>

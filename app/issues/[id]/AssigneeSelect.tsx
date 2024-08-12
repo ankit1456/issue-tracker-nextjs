@@ -8,7 +8,7 @@ import { Skeleton } from "@/components";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-function AssigneeSelect({ issue }: { issue: Issue }) {
+function AssigneeSelect({ issue }: Readonly<{ issue: Issue }>) {
   const { data: users, isPending: isLoadingUsers, error } = useUsers();
   const router = useRouter();
 
