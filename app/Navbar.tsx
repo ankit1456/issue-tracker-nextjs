@@ -11,9 +11,9 @@ import ThemeSwitcher from "./ThemeSwitcher";
 
 function Navbar() {
   return (
-    <nav className="mb-5 border-b px-5 text-[.9rem] tracking-wide shadow-sm">
+    <nav className="mb-5 border-b px-2 text-[.9rem] tracking-wide shadow-sm sm:px-5">
       <Container>
-        <Flex justify="between" align="center" className="h-14 px-5">
+        <Flex justify="between" align="center" className="h-14">
           <Flex align="center" gap="4">
             <Link href="/">
               <AiFillBug className="text-xl text-[var(--accent-10)]" />
