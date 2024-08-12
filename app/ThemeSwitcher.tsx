@@ -69,22 +69,32 @@ const ThemeSwitcher = () => {
             <Select.Content position="popper">
               <Select.Group>
                 <Select.Label>Color Theme</Select.Label>
-                {themes.map((theme) => (
-                  <Select.Item key={theme.label} value={theme.value}>
-                    <Flex align="center" gap="3" justify="between">
-                      <Text>{theme.label}</Text>
+                <Box className="divide-y-[1px]">
+                  {themes.map((theme) => (
+                    <Select.Item
+                      key={theme.label}
+                      value={theme.value}
+                      className="py-4"
+                    >
+                      <Flex
+                        align="center"
+                        justify="between"
+                        className="w-[6.5rem]"
+                      >
+                        <Text>{theme.label}</Text>
 
-                      <Box
-                        width="4"
-                        height="4"
-                        style={{
-                          backgroundColor: theme.colorCode,
-                          borderRadius: "50%",
-                        }}
-                      ></Box>
-                    </Flex>
-                  </Select.Item>
-                ))}
+                        <Box
+                          className="size-4"
+                          style={{
+                            backgroundColor: theme.colorCode,
+                          }}
+                        ></Box>
+                      </Flex>
+
+                      {/* </Flex> */}
+                    </Select.Item>
+                  ))}
+                </Box>
               </Select.Group>
             </Select.Content>
           </Select.Root>

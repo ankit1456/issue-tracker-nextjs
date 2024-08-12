@@ -26,6 +26,7 @@ function AssigneeSelect({ issue }: Readonly<{ issue: Issue }>) {
       toast.success(
         !data.assignedToUserId ? "Issue Unassigned" : "Issue assigned",
       );
+
       router.refresh();
     },
     onError: () => toast.error("Changes could not be saved"),
