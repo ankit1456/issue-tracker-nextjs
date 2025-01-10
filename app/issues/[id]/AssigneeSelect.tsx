@@ -3,7 +3,7 @@
 import { Issue, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 function AssigneeSelect({ issue }: Readonly<{ issue: Issue }>) {
   const { data: users, isPending: isLoadingUsers, error } = useUsers();
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   const assignIssue = async (userId: string) => {
     const { data } = await axios.patch(`/api/issues/${issue.id}`, {
       assignedToUserId: userId !== "null" ? userId : null,
@@ -26,7 +26,7 @@ function AssigneeSelect({ issue }: Readonly<{ issue: Issue }>) {
       toast.success(
         !data.assignedToUserId ? "Issue Unassigned" : "Issue assigned",
       );
-
+      queryClient.invalidateQueries({ queryKey: [`issue-${issue.id}`] });
       router.refresh();
     },
     onError: () => toast.error("Changes could not be saved"),
